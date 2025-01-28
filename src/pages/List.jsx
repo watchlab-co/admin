@@ -9,7 +9,7 @@ const List = ({ token }) => {
   const fetchList = async (page = 1) => {
     try {
       const response = await axios.get(backendUrl + '/api/product/list')
-
+      //res
       if (response.data.success) {
         setList(response.data.products);
       } else {
