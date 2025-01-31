@@ -111,9 +111,10 @@ const Add = ({ token }) => {
         <div>
           <p className='mb-2'>Product Sub-category</p>
           <select onChange={(e) => setSubCategory(e.target.value)} className='w-full px-3 py-2'>
-            <option value="Topwear">Topwear</option>
-            <option value="Bottomwear">Bottomwear</option>
-            <option value="Winterwear">Winterwear</option>
+            <option value="Rolex">Rolex</option>
+            <option value="Casio">Casio</option>
+            <option value="Seiko">Seiko</option>
+            <option value="Fossil">Fossil</option>
           </select>
         </div>
 
@@ -124,36 +125,36 @@ const Add = ({ token }) => {
       </div>
 
       <div>
-  <p className='mb-2'>Watch Sizes</p>
-  <div className='flex gap-3'>
+        <p className='mb-2'>Watch Sizes</p>
+        <div className='flex gap-3'>
 
-    <div onClick={() => setSizes(prev => prev.includes("38mm") ? prev.filter(item => item !== "38mm") : [...prev, "38mm"])}>
-      <p className={`${sizes.includes("38mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>38mm</p>
-    </div>
+          <div onClick={() => setSizes(prev => prev.includes("38mm") ? prev.filter(item => item !== "38mm") : [...prev, "38mm"])}>
+            <p className={`${sizes.includes("38mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>38mm</p>
+          </div>
 
-    <div onClick={() => setSizes(prev => prev.includes("40mm") ? prev.filter(item => item !== "40mm") : [...prev, "40mm"])}>
-      <p className={`${sizes.includes("40mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>40mm</p>
-    </div>
+          <div onClick={() => setSizes(prev => prev.includes("40mm") ? prev.filter(item => item !== "40mm") : [...prev, "40mm"])}>
+            <p className={`${sizes.includes("40mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>40mm</p>
+          </div>
 
-    <div onClick={() => setSizes(prev => prev.includes("42mm") ? prev.filter(item => item !== "42mm") : [...prev, "42mm"])}>
-      <p className={`${sizes.includes("42mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>42mm</p>
-    </div>
+          <div onClick={() => setSizes(prev => prev.includes("42mm") ? prev.filter(item => item !== "42mm") : [...prev, "42mm"])}>
+            <p className={`${sizes.includes("42mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>42mm</p>
+          </div>
 
-    <div onClick={() => setSizes(prev => prev.includes("45mm") ? prev.filter(item => item !== "45mm") : [...prev, "45mm"])}>
-      <p className={`${sizes.includes("45mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>45mm</p>
-    </div>
+          <div onClick={() => setSizes(prev => prev.includes("45mm") ? prev.filter(item => item !== "45mm") : [...prev, "45mm"])}>
+            <p className={`${sizes.includes("45mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>45mm</p>
+          </div>
 
-  </div>
-</div>
-
-
-
-        <div className='flex gap-2 mt-2'>
-          <input onChange={() => setBestseller(prev => !prev)} checked={bestseller} type="checkbox" id="bestseller" />
-          <label className='cursor-pointer' htmlFor="bestseller">Add to Bestseller</label>
         </div>
+      </div>
 
-        <button className='w-28 py-3 mt-4 bg-black text-white' type='submit'>Add Product</button>
+
+
+      <div className='flex gap-2 mt-2'>
+        <input onChange={() => setBestseller(prev => !prev)} checked={bestseller} type="checkbox" id="bestseller" />
+        <label className='cursor-pointer' htmlFor="bestseller">Add to Bestseller</label>
+      </div>
+
+      <button className='w-28 py-3 mt-4 bg-black text-white' type='submit'>Add Product</button>
     </form >
   )
 }
