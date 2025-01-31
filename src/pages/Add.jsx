@@ -13,7 +13,7 @@ const Add = ({ token }) => {
   const [image4, setImage4] = useState(false)
 
   const [name, setName] = useState('')
-  const [description, setDescription] = useState('A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.')
+  const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
   const [category, setCategory] = useState('Men')
   const [subCategory, setSubCategory] = useState('Topwear')
