@@ -115,6 +115,13 @@ const Add = ({ token }) => {
             <option value="Casio">Casio</option>
             <option value="Seiko">Seiko</option>
             <option value="Fossil">Fossil</option>
+            <option value="Rado">Rado</option>
+            <option value="PatekPhilippe">PatekPhilippe</option>
+            <option value="Cartier">Cartier</option>
+            <option value="Tissot">Tissot</option>
+            <option value="AudemarsPiguet">AudemarsPiguet</option>
+            <option value="Omega">Omega</option>
+            <option value="Hublot">Hublot</option>
           </select>
         </div>
 
