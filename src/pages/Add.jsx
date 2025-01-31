@@ -105,6 +105,7 @@ const Add = ({ token }) => {
           <select onChange={(e) => setCategory(e.target.value)} className='w-full px-3 py-2'>
             <option value="Men">Men</option>
             <option value="Women">Women</option>
+            <option value="unisex">unisex</option>
           </select>
         </div>
 
