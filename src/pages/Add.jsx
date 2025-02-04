@@ -1,171 +1,315 @@
-import React from 'react'
-import { assets } from '../assets/assets'
-import { useState } from 'react'
-import axios from 'axios'
-import { backendUrl } from '../App'
-import { toast } from 'react-toastify'
+import React, { useState } from 'react';
+import { assets } from '../assets/assets';
+import axios from 'axios';
+import { backendUrl } from '../App';
+import { toast } from 'react-toastify';
 
 const Add = ({ token }) => {
+  const [image1, setImage1] = useState(false);
+  const [image2, setImage2] = useState(false);
+  const [image3, setImage3] = useState(false);
+  const [image4, setImage4] = useState(false);
 
-  const [image1, setImage1] = useState(false)
-  const [image2, setImage2] = useState(false)
-  const [image3, setImage3] = useState(false)
-  const [image4, setImage4] = useState(false)
-
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [price, setPrice] = useState('')
-  const [category, setCategory] = useState('Men')
-  const [subCategory, setSubCategory] = useState('Topwear')
-  const [bestseller, setBestseller] = useState(false)
-  const [sizes, setSizes] = useState([])
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [discount, setDiscount] = useState('');
+  const [category, setCategory] = useState('Men');
+  const [subCategory, setSubCategory] = useState('Branded');
+  const [bestseller, setBestseller] = useState(false);
+  const [sizes, setSizes] = useState([]);
+  const [stock, setStock] = useState('');
+  const [dialColor, setDialColor] = useState('');
+  const [strapMaterial, setStrapMaterial] = useState('Leather');
+  const [features, setFeatures] = useState([]);
+  const [movement, setMovement] = useState('Quartz');
 
   const onSubmitHandler = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
+      const formData = new FormData();
 
-      const formData = new FormData()
+      // Basic product details
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("discount", discount);
+      formData.append("category", category);
+      formData.append("subCategory", subCategory);
+      formData.append("bestseller", bestseller);
+      formData.append("sizes", JSON.stringify(sizes));
+      formData.append("stock", stock);
 
-      formData.append("name", name)
-      formData.append("description", description)
-      formData.append("price", price)
-      formData.append("category", category)
-      formData.append("subCategory", subCategory)
-      formData.append("bestseller", bestseller)
-      formData.append("sizes", JSON.stringify(sizes))
+      // Watch specific details
+      formData.append("dialColor", dialColor);
+      formData.append("strapMaterial", strapMaterial);
+      formData.append("features", JSON.stringify(features));
+      formData.append("movement", movement);
 
-      image1 && formData.append("image1", image1)
-      image2 && formData.append("image2", image2)
-      image3 && formData.append("image3", image3)
-      image4 && formData.append("image4", image4)
+      // Images
+      image1 && formData.append("image1", image1);
+      image2 && formData.append("image2", image2);
+      image3 && formData.append("image3", image3);
+      image4 && formData.append("image4", image4);
 
-      const response = await axios.post(backendUrl + '/api/product/add', formData, { headers: { token } })
+      const response = await axios.post(backendUrl + '/api/product/add', formData, { headers: { token } });
 
       if (response.data.success) {
-        toast.success(response.data.message)
-        setName('')
-        setDescription('A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.')
-        setPrice('')
-        setImage1(false)
-        setImage2(false)
-        setImage3(false)
-        setImage4(false)
+        toast.success(response.data.message);
+        // Reset form
+        setName('');
+        setDescription('');
+        setPrice('');
+        setDiscount('');
+        setStock('');
+        setDialColor('');
+        setFeatures([]);
+        setImage1(false);
+        setImage2(false);
+        setImage3(false);
+        setImage4(false);
       } else {
-        toast.error(response.data.message)
+        toast.error(response.data.message);
       }
-
     } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+      console.log(error);
+      toast.error(error.message);
     }
-  }
+  };
 
+  const watchFeatures = [
+    'Chronograph', 'Date Display', 'Luminous Hands', 'Tachymeter',
+    'Perpetual Calendar', 'Moon Phase', 'GMT', 'Skeleton Dial'
+  ];
 
   return (
-    <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-3'>
+    <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
       <div>
-        <p className='mb-2'>Upload Image</p>
-
-        <div className='flex gap-2'>
-          <label htmlFor="image1">
-            <img className='w-20' src={!image1 ? assets.upload_area : URL.createObjectURL(image1)} alt="" />
-            <input onChange={(e) => setImage1(e.target.files[0])} type="file" id="image1" hidden />
-          </label>
-
-          <label htmlFor="image2">
-            <img className='w-20' src={!image2 ? assets.upload_area : URL.createObjectURL(image2)} alt="" />
-            <input onChange={(e) => setImage2(e.target.files[0])} type="file" id="image2" hidden />
-          </label>
-
-          <label htmlFor="image3">
-            <img className='w-20' src={!image3 ? assets.upload_area : URL.createObjectURL(image3)} alt="" />
-            <input onChange={(e) => setImage3(e.target.files[0])} type="file" id="image3" hidden />
-          </label>
-
-          <label htmlFor="image4">
-            <img className='w-20' src={!image4 ? assets.upload_area : URL.createObjectURL(image4)} alt="" />
-            <input onChange={(e) => setImage4(e.target.files[0])} type="file" id="image4" hidden />
-          </label>
+        <p className="mb-2">Upload Image</p>
+        <div className="flex gap-2">
+          {[
+            { state: image1, setState: setImage1, id: "image1" },
+            { state: image2, setState: setImage2, id: "image2" },
+            { state: image3, setState: setImage3, id: "image3" },
+            { state: image4, setState: setImage4, id: "image4" }
+          ].map(({ state, setState, id }) => (
+            <label key={id} htmlFor={id}>
+              <img 
+                className="w-20 h-20 object-cover border-2 border-gray-200" 
+                src={!state ? assets.upload_area : URL.createObjectURL(state)} 
+                alt="" 
+              />
+              <input onChange={(e) => setState(e.target.files[0])} type="file" id={id} hidden />
+            </label>
+          ))}
         </div>
       </div>
 
-      <div className='w-full'>
-        <p className='mb-2'>Product Name</p>
-        <input onChange={(e) => setName(e.target.value)} value={name} className='w-full max-w-[500px] px-3 py-2' type="text" placeholder='Enter the product name' required />
+      <div className="w-full">
+        <p className="mb-2">Product Name</p>
+        <input 
+          onChange={(e) => setName(e.target.value)} 
+          value={name} 
+          className="w-full max-w-[500px] px-3 py-2 border rounded" 
+          type="text" 
+          placeholder="Enter the product name" 
+          required 
+        />
       </div>
 
-      <div className='w-full'>
-        <p className='mb-2'>Product Description</p>
-        <textarea onChange={(e) => setDescription(e.target.value)} value={description} className='w-full max-w-[500px] px-3 py-2' type="text" placeholder='Enter the product description' required />
+      <div className="w-full">
+        <p className="mb-2">Product Description</p>
+        <textarea 
+          onChange={(e) => setDescription(e.target.value)} 
+          value={description} 
+          className="w-full max-w-[500px] px-3 py-2 border rounded" 
+          placeholder="Enter the product description" 
+          required 
+        />
       </div>
 
-      <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-[500px]">
         <div>
-          <p className='mb-2'>Product Category</p>
-          <select onChange={(e) => setCategory(e.target.value)} className='w-full px-3 py-2'>
+          <p className="mb-2">Category</p>
+          <select 
+            onChange={(e) => setCategory(e.target.value)} 
+            value={category}
+            className="w-full px-3 py-2 border rounded"
+          >
             <option value="Men">Men</option>
             <option value="Women">Women</option>
-            <option value="unisex">unisex</option>
+            <option value="unisex">Unisex</option>
           </select>
         </div>
 
         <div>
-          <p className='mb-2'>Product Sub-category</p>
-          <select onChange={(e) => setSubCategory(e.target.value)} className='w-full px-3 py-2'>
+          <p className="mb-2">Brand</p>
+          <select 
+            onChange={(e) => setSubCategory(e.target.value)} 
+            value={subCategory}
+            className="w-full px-3 py-2 border rounded"
+          >
             <option value="Branded">Branded</option>
             <option value="Rolex">Rolex</option>
             <option value="Casio">Casio</option>
             <option value="Seiko">Seiko</option>
             <option value="Fossil">Fossil</option>
             <option value="Rado">Rado</option>
-            <option value="PatekPhilippe">PatekPhilippe</option>
+            <option value="PatekPhilippe">Patek Philippe</option>
             <option value="Cartier">Cartier</option>
             <option value="Tissot">Tissot</option>
-            <option value="AudemarsPiguet">AudemarsPiguet</option>
+            <option value="AudemarsPiguet">Audemars Piguet</option>
             <option value="Omega">Omega</option>
             <option value="Hublot">Hublot</option>
           </select>
         </div>
 
         <div>
-          <p className='mb-2'>Product Price</p>
-          <input onChange={(e) => setPrice(e.target.value)} value={price} className='w-full px-3 py-2 sm:w-[120px]' type="number" placeholder='250' />
+          <p className="mb-2">Movement</p>
+          <select 
+            onChange={(e) => setMovement(e.target.value)} 
+            value={movement}
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="Quartz">Quartz</option>
+            <option value="Automatic">Automatic</option>
+            <option value="Mechanical">Mechanical</option>
+            <option value="Solar">Solar</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-[500px]">
+        <div>
+          <p className="mb-2">Price ($)</p>
+          <input 
+            onChange={(e) => setPrice(e.target.value)} 
+            value={price} 
+            className="w-full px-3 py-2 border rounded" 
+            type="number" 
+            placeholder="250" 
+            required 
+          />
+        </div>
+
+        <div>
+          <p className="mb-2">Discount (%)</p>
+          <input 
+            onChange={(e) => setDiscount(e.target.value)} 
+            value={discount} 
+            className="w-full px-3 py-2 border rounded" 
+            type="number" 
+            placeholder="10" 
+            min="0"
+            max="100"
+          />
+        </div>
+
+        <div>
+          <p className="mb-2">Stock</p>
+          <input 
+            onChange={(e) => setStock(e.target.value)} 
+            value={stock} 
+            className="w-full px-3 py-2 border rounded" 
+            type="number" 
+            placeholder="100" 
+            required 
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[500px]">
+        <div>
+          <p className="mb-2">Dial Color</p>
+          <input 
+            onChange={(e) => setDialColor(e.target.value)} 
+            value={dialColor} 
+            className="w-full px-3 py-2 border rounded" 
+            type="text" 
+            placeholder="Black" 
+            required 
+          />
+        </div>
+
+        <div>
+          <p className="mb-2">Strap Material</p>
+          <select 
+            onChange={(e) => setStrapMaterial(e.target.value)} 
+            value={strapMaterial}
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="Leather">Leather</option>
+            <option value="Metal">Metal</option>
+            <option value="Rubber">Rubber</option>
+            <option value="Fabric">Fabric</option>
+            <option value="Ceramic">Ceramic</option>
+          </select>
         </div>
       </div>
 
       <div>
-        <p className='mb-2'>Watch Sizes</p>
-        <div className='flex gap-3'>
-
-          <div onClick={() => setSizes(prev => prev.includes("38mm") ? prev.filter(item => item !== "38mm") : [...prev, "38mm"])}>
-            <p className={`${sizes.includes("38mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>38mm</p>
-          </div>
-
-          <div onClick={() => setSizes(prev => prev.includes("40mm") ? prev.filter(item => item !== "40mm") : [...prev, "40mm"])}>
-            <p className={`${sizes.includes("40mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>40mm</p>
-          </div>
-
-          <div onClick={() => setSizes(prev => prev.includes("42mm") ? prev.filter(item => item !== "42mm") : [...prev, "42mm"])}>
-            <p className={`${sizes.includes("42mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>42mm</p>
-          </div>
-
-          <div onClick={() => setSizes(prev => prev.includes("45mm") ? prev.filter(item => item !== "45mm") : [...prev, "45mm"])}>
-            <p className={`${sizes.includes("45mm") ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>45mm</p>
-          </div>
-
+        <p className="mb-2">Watch Sizes</p>
+        <div className="flex flex-wrap gap-3">
+          {["38mm", "40mm", "42mm", "45mm"].map((size) => (
+            <div 
+              key={size}
+              onClick={() => setSizes(prev => 
+                prev.includes(size) 
+                  ? prev.filter(item => item !== size) 
+                  : [...prev, size]
+              )}
+              className={`${
+                sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
+              } px-3 py-1 cursor-pointer rounded`}
+            >
+              {size}
+            </div>
+          ))}
         </div>
       </div>
 
-
-
-      <div className='flex gap-2 mt-2'>
-        <input onChange={() => setBestseller(prev => !prev)} checked={bestseller} type="checkbox" id="bestseller" />
-        <label className='cursor-pointer' htmlFor="bestseller">Add to Bestseller</label>
+      <div>
+        <p className="mb-2">Features</p>
+        <div className="flex flex-wrap gap-3">
+          {watchFeatures.map((feature) => (
+            <div 
+              key={feature}
+              onClick={() => setFeatures(prev => 
+                prev.includes(feature) 
+                  ? prev.filter(item => item !== feature) 
+                  : [...prev, feature]
+              )}
+              className={`${
+                features.includes(feature) ? 'bg-pink-100' : 'bg-slate-200'
+              } px-3 py-1 cursor-pointer rounded`}
+            >
+              {feature}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <button className='w-28 py-3 mt-4 bg-black text-white' type='submit'>Add Product</button>
-    </form >
-  )
-}
+      <div className="flex gap-2 mt-2">
+        <input 
+          onChange={() => setBestseller(prev => !prev)} 
+          checked={bestseller} 
+          type="checkbox" 
+          id="bestseller" 
+          className="w-4 h-4"
+        />
+        <label className="cursor-pointer" htmlFor="bestseller">
+          Add to Bestseller
+        </label>
+      </div>
 
-export default Add
+      <button 
+        className="w-28 py-3 mt-4 bg-black text-white rounded hover:bg-gray-800 transition-colors" 
+        type="submit"
+      >
+        Add Product
+      </button>
+    </form>
+  );
+};
+
+export default Add;
