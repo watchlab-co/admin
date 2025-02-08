@@ -18,8 +18,7 @@ const Add = ({ token }) => {
   const [subCategory, setSubCategory] = useState('Branded');
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
-  const [stock, setStock] = useState('');
-  const [dialColor, setDialColor] = useState('');
+  const [stock, setStock] = useState('Yes');
   const [strapMaterial, setStrapMaterial] = useState('Leather');
   const [features, setFeatures] = useState([]);
   const [movement, setMovement] = useState('Quartz');
@@ -41,7 +40,6 @@ const Add = ({ token }) => {
       formData.append("stock", stock);
 
       // Watch specific details
-      formData.append("dialColor", dialColor);
       formData.append("strapMaterial", strapMaterial);
       formData.append("features", JSON.stringify(features));
       formData.append("movement", movement);
@@ -62,7 +60,6 @@ const Add = ({ token }) => {
         setPrice('');
         setDiscount('');
         setStock('');
-        setDialColor('');
         setFeatures([]);
         setImage1(false);
         setImage2(false);
@@ -94,10 +91,10 @@ const Add = ({ token }) => {
             { state: image4, setState: setImage4, id: "image4" }
           ].map(({ state, setState, id }) => (
             <label key={id} htmlFor={id}>
-              <img 
-                className="w-20 h-20 object-cover border-2 border-gray-200" 
-                src={!state ? assets.upload_area : URL.createObjectURL(state)} 
-                alt="" 
+              <img
+                className="w-20 h-20 object-cover border-2 border-gray-200"
+                src={!state ? assets.upload_area : URL.createObjectURL(state)}
+                alt=""
               />
               <input onChange={(e) => setState(e.target.files[0])} type="file" id={id} hidden />
             </label>
@@ -107,32 +104,32 @@ const Add = ({ token }) => {
 
       <div className="w-full">
         <p className="mb-2">Product Name</p>
-        <input 
-          onChange={(e) => setName(e.target.value)} 
-          value={name} 
-          className="w-full max-w-[500px] px-3 py-2 border rounded" 
-          type="text" 
-          placeholder="Enter the product name" 
-          required 
+        <input
+          onChange={(e) => setName(e.target.value)}
+          value={name}
+          className="w-full max-w-[500px] px-3 py-2 border rounded"
+          type="text"
+          placeholder="Enter the product name"
+          required
         />
       </div>
 
       <div className="w-full">
         <p className="mb-2">Product Description</p>
-        <textarea 
-          onChange={(e) => setDescription(e.target.value)} 
-          value={description} 
-          className="w-full max-w-[500px] px-3 py-2 border rounded" 
-          placeholder="Enter the product description" 
-          required 
+        <textarea
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
+          className="w-full max-w-[500px] px-3 py-2 border rounded"
+          placeholder="Enter the product description"
+          required
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-[500px]">
         <div>
           <p className="mb-2">Category</p>
-          <select 
-            onChange={(e) => setCategory(e.target.value)} 
+          <select
+            onChange={(e) => setCategory(e.target.value)}
             value={category}
             className="w-full px-3 py-2 border rounded"
           >
@@ -144,8 +141,8 @@ const Add = ({ token }) => {
 
         <div>
           <p className="mb-2">Brand</p>
-          <select 
-            onChange={(e) => setSubCategory(e.target.value)} 
+          <select
+            onChange={(e) => setSubCategory(e.target.value)}
             value={subCategory}
             className="w-full px-3 py-2 border rounded"
           >
@@ -166,8 +163,8 @@ const Add = ({ token }) => {
 
         <div>
           <p className="mb-2">Movement</p>
-          <select 
-            onChange={(e) => setMovement(e.target.value)} 
+          <select
+            onChange={(e) => setMovement(e.target.value)}
             value={movement}
             className="w-full px-3 py-2 border rounded"
           >
@@ -182,59 +179,48 @@ const Add = ({ token }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-[500px]">
         <div>
           <p className="mb-2">Price ($)</p>
-          <input 
-            onChange={(e) => setPrice(e.target.value)} 
-            value={price} 
-            className="w-full px-3 py-2 border rounded" 
-            type="number" 
-            placeholder="250" 
-            required 
+          <input
+            onChange={(e) => setPrice(e.target.value)}
+            value={price}
+            className="w-full px-3 py-2 border rounded"
+            type="number"
+            placeholder="250"
+            required
           />
         </div>
 
         <div>
-          <p className="mb-2">Discount (%)</p>
-          <input 
-            onChange={(e) => setDiscount(e.target.value)} 
-            value={discount} 
-            className="w-full px-3 py-2 border rounded" 
-            type="number" 
-            placeholder="10" 
+          <p className="mb-2">Discount (Fake Price )</p>
+          <input
+            onChange={(e) => setDiscount(e.target.value)}
+            value={discount}
+            className="w-full px-3 py-2 border rounded"
+            type="number"
+            placeholder="10"
             min="0"
-            max="100"
           />
         </div>
 
         <div>
           <p className="mb-2">Stock</p>
-          <input 
-            onChange={(e) => setStock(e.target.value)} 
-            value={stock} 
-            className="w-full px-3 py-2 border rounded" 
-            type="number" 
-            placeholder="100" 
-            required 
-          />
+          <select
+            onChange={(e) => setMovement(e.target.value)}
+            value={stock}
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[500px]">
-        <div>
-          <p className="mb-2">Dial Color</p>
-          <input 
-            onChange={(e) => setDialColor(e.target.value)} 
-            value={dialColor} 
-            className="w-full px-3 py-2 border rounded" 
-            type="text" 
-            placeholder="Black" 
-            required 
-          />
-        </div>
+       
 
         <div>
           <p className="mb-2">Strap Material</p>
-          <select 
-            onChange={(e) => setStrapMaterial(e.target.value)} 
+          <select
+            onChange={(e) => setStrapMaterial(e.target.value)}
             value={strapMaterial}
             className="w-full px-3 py-2 border rounded"
           >
@@ -251,16 +237,15 @@ const Add = ({ token }) => {
         <p className="mb-2">Watch Sizes</p>
         <div className="flex flex-wrap gap-3">
           {["38mm", "40mm", "42mm", "45mm"].map((size) => (
-            <div 
+            <div
               key={size}
-              onClick={() => setSizes(prev => 
-                prev.includes(size) 
-                  ? prev.filter(item => item !== size) 
+              onClick={() => setSizes(prev =>
+                prev.includes(size)
+                  ? prev.filter(item => item !== size)
                   : [...prev, size]
               )}
-              className={`${
-                sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
-              } px-3 py-1 cursor-pointer rounded`}
+              className={`${sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
+                } px-3 py-1 cursor-pointer rounded`}
             >
               {size}
             </div>
@@ -272,16 +257,15 @@ const Add = ({ token }) => {
         <p className="mb-2">Features</p>
         <div className="flex flex-wrap gap-3">
           {watchFeatures.map((feature) => (
-            <div 
+            <div
               key={feature}
-              onClick={() => setFeatures(prev => 
-                prev.includes(feature) 
-                  ? prev.filter(item => item !== feature) 
+              onClick={() => setFeatures(prev =>
+                prev.includes(feature)
+                  ? prev.filter(item => item !== feature)
                   : [...prev, feature]
               )}
-              className={`${
-                features.includes(feature) ? 'bg-pink-100' : 'bg-slate-200'
-              } px-3 py-1 cursor-pointer rounded`}
+              className={`${features.includes(feature) ? 'bg-pink-100' : 'bg-slate-200'
+                } px-3 py-1 cursor-pointer rounded`}
             >
               {feature}
             </div>
@@ -290,11 +274,11 @@ const Add = ({ token }) => {
       </div>
 
       <div className="flex gap-2 mt-2">
-        <input 
-          onChange={() => setBestseller(prev => !prev)} 
-          checked={bestseller} 
-          type="checkbox" 
-          id="bestseller" 
+        <input
+          onChange={() => setBestseller(prev => !prev)}
+          checked={bestseller}
+          type="checkbox"
+          id="bestseller"
           className="w-4 h-4"
         />
         <label className="cursor-pointer" htmlFor="bestseller">
@@ -302,8 +286,8 @@ const Add = ({ token }) => {
         </label>
       </div>
 
-      <button 
-        className="w-28 py-3 mt-4 bg-black text-white rounded hover:bg-gray-800 transition-colors" 
+      <button
+        className="w-28 py-3 mt-4 bg-black text-white rounded hover:bg-gray-800 transition-colors"
         type="submit"
       >
         Add Product
