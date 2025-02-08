@@ -78,7 +78,6 @@ const Add = ({ token }) => {
 
       const response = await axios.post(backendUrl + '/api/product/add', formData, {
         headers: { token },
-        timeout: 30000 // 30 second timeout
       });
 
       if (response.data.success) {
