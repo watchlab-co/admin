@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { assets } from '../assets/assets';
 import axios from 'axios';
 import { backendUrl } from '../App';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const Edit = ({ token }) => {

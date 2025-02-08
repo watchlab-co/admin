@@ -10,6 +10,7 @@ import Login from './components/Login'
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react'
 import Edit from './pages/Edit'
+import { Toaster } from 'react-hot-toast'
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 export const currency = '₹'
@@ -25,7 +26,7 @@ const App = () => {
 
   return (
     <div className='bg-gray-50 min-h-screen'>
-      <ToastContainer />
+      <Toaster position="top-right" />
       {token === '' ? <Login setToken={setToken} />
         :
         <>

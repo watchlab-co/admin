@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { assets } from '../assets/assets';
 import axios from 'axios';
 import { backendUrl } from '../App';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
 const Add = ({ token }) => {
   const [image1, setImage1] = useState(false);
   const [image2, setImage2] = useState(false);
   const [image3, setImage3] = useState(false);
   const [image4, setImage4] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -23,8 +25,32 @@ const Add = ({ token }) => {
   const [features, setFeatures] = useState([]);
   const [movement, setMovement] = useState('Quartz');
 
+  const resetForm = () => {
+    setName('');
+    setDescription('');
+    setPrice('');
+    setDiscount('');
+    setStock('Yes');
+    setFeatures([]);
+    setImage1(false);
+    setImage2(false);
+    setImage3(false);
+    setImage4(false);
+    setCategory('Men');
+    setSubCategory('Branded');
+    setBestseller(false);
+    setSizes([]);
+    setStrapMaterial('Leather');
+    setMovement('Quartz');
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    const loadingToast = toast.loading('Adding product...');
+    setIsSubmitting(true);
+
     try {
       const formData = new FormData();
 
@@ -50,27 +76,25 @@ const Add = ({ token }) => {
       image3 && formData.append("image3", image3);
       image4 && formData.append("image4", image4);
 
-      const response = await axios.post(backendUrl + '/api/product/add', formData, { headers: { token } });
+      const response = await axios.post(backendUrl + '/api/product/add', formData, {
+        headers: { token },
+        timeout: 30000 // 30 second timeout
+      });
 
       if (response.data.success) {
-        toast.success(response.data.message);
-        // Reset form
-        setName('');
-        setDescription('');
-        setPrice('');
-        setDiscount('');
-        setStock('');
-        setFeatures([]);
-        setImage1(false);
-        setImage2(false);
-        setImage3(false);
-        setImage4(false);
+        toast.success(response.data.message, { id: loadingToast });
+        resetForm();
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message, { id: loadingToast });
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.message);
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || 'Failed to add product. Please try again.',
+        { id: loadingToast }
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -78,6 +102,7 @@ const Add = ({ token }) => {
     'Chronograph', 'Date Display', 'Luminous Hands', 'Tachymeter',
     'Perpetual Calendar', 'Moon Phase', 'GMT', 'Skeleton Dial'
   ];
+
 
   return (
     <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
@@ -90,13 +115,23 @@ const Add = ({ token }) => {
             { state: image3, setState: setImage3, id: "image3" },
             { state: image4, setState: setImage4, id: "image4" }
           ].map(({ state, setState, id }) => (
-            <label key={id} htmlFor={id}>
+            <label
+              key={id}
+              htmlFor={id}
+              className={`relative ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
               <img
                 className="w-20 h-20 object-cover border-2 border-gray-200"
                 src={!state ? assets.upload_area : URL.createObjectURL(state)}
                 alt=""
               />
-              <input onChange={(e) => setState(e.target.files[0])} type="file" id={id} hidden />
+              <input
+                onChange={(e) => setState(e.target.files[0])}
+                type="file"
+                id={id}
+                hidden
+                disabled={isSubmitting}
+              />
             </label>
           ))}
         </div>
@@ -107,10 +142,11 @@ const Add = ({ token }) => {
         <input
           onChange={(e) => setName(e.target.value)}
           value={name}
-          className="w-full max-w-[500px] px-3 py-2 border rounded"
+          className="w-full max-w-[500px] px-3 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
           type="text"
           placeholder="Enter the product name"
           required
+          disabled={isSubmitting}
         />
       </div>
 
@@ -215,7 +251,7 @@ const Add = ({ token }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[500px]">
-       
+
 
         <div>
           <p className="mb-2">Strap Material</p>
@@ -287,10 +323,19 @@ const Add = ({ token }) => {
       </div>
 
       <button
-        className="w-28 py-3 mt-4 bg-black text-white rounded hover:bg-gray-800 transition-colors"
+        className={`w-28 py-3 mt-4 bg-black text-white rounded transition-colors flex items-center justify-center gap-2
+          ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-800'}`}
         type="submit"
+        disabled={isSubmitting}
       >
-        Add Product
+        {isSubmitting ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Adding...
+          </>
+        ) : (
+          'Add Product'
+        )}
       </button>
     </form>
   );
