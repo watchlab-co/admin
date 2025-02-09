@@ -177,7 +177,23 @@ const Edit = ({ token }) => {
             <option value="AudemarsPiguet">Audemars Piguet</option>
             <option value="Omega">Omega</option>
             <option value="Hublot">Hublot</option>
-          </select>
+            <option value="Daniel-wellington">Danil Wellington</option>
+            <option value="Fastrack">Fastrack</option>
+            <option value="Versace">Versace</option>
+            <option value="Citizen">Citizen</option>
+            <option value="Omega">Omega</option>
+            <option value="Apple">Apple</option>
+            <option value="Richard-mille">Richars Mille</option>
+            <option value="Gucci">GUCCI</option>
+            <option value="Franck-muller">Franck Muller</option>
+            <option value="Vacheron-constantin">Vacheron Constantin</option>
+            <option value="Burberry">Burberry</option>
+            <option value="Bvlgari">Bvlgari</option>
+            <option value="Invicta">Invicta</option>
+            <option value="Calvin-klein-ck">Calvin Klvin (CK)</option>
+            <option value="Christian-dior">Christian Dior</option>
+            <option value="Chanel">Chan</opeltion>
+            <option value="Guess">Guess</option>
         </div>
 
         <div>
