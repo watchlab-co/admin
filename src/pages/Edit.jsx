@@ -192,7 +192,7 @@ const Edit = ({ token }) => {
             <option value="Invicta">Invicta</option>
             <option value="Calvin-klein-ck">Calvin Klvin (CK)</option>
             <option value="Christian-dior">Christian Dior</option>
-            <option value="Chanel">Chan</opeltion>
+            <option value="Chanel">Chanel</option>
             <option value="Guess">Guess</option>
         </div>
 
