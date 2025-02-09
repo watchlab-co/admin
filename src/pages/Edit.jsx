@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { assets } from '../assets/assets';
 import axios from 'axios';
 import { backendUrl } from '../App';
 import { toast } from 'react-hot-toast';
-import { useParams, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import { useParams ,useNavigate } from 'react-router-dom';
 
 const Edit = ({ token }) => {
-  const navigate = useNavigate();
-  const { productId } = useParams();
+  const { productId } = useParams(); 
+  const navigate = useNavigate()
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const [image1, setImage1] = useState(false);
-  const [image2, setImage2] = useState(false);
-  const [image3, setImage3] = useState(false);
-  const [image4, setImage4] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -24,7 +18,7 @@ const Edit = ({ token }) => {
   const [category, setCategory] = useState('Men');
   const [subCategory, setSubCategory] = useState('Branded');
   const [bestseller, setBestseller] = useState(false);
-  const [sizes, setSizes] = useState([]);
+  const [colours, setColour] = useState([]);
   const [stock, setStock] = useState('Yes');
   const [strapMaterial, setStrapMaterial] = useState('Leather');
   const [features, setFeatures] = useState([]);
@@ -33,7 +27,10 @@ const Edit = ({ token }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/api/product/${productId}`);
+        const response = await axios.get(`${backendUrl}/api/product/${productId}`, {
+          headers: { token }
+        });
+        
         if (response.data.success) {
           const product = response.data.product;
           setName(product.name);
@@ -43,25 +40,22 @@ const Edit = ({ token }) => {
           setCategory(product.category);
           setSubCategory(product.subCategory);
           setBestseller(product.bestseller);
-          setSizes(product.sizes);
+          setColour(product.colours);
           setStock(product.stock);
           setStrapMaterial(product.strapMaterial);
           setFeatures(product.features);
           setMovement(product.movement);
-          // Handle images if they exist
-          // You might need to adjust this based on your backend response structure
-        } else {
-          toast.error(response.data.message);
         }
       } catch (error) {
         toast.error('Failed to fetch product details');
+        console.error(error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchProduct();
-  }, [productId]);
+  }, [productId, token]);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -71,41 +65,32 @@ const Edit = ({ token }) => {
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData();
-
-      // Basic product details
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("discount", discount);
-      formData.append("category", category);
-      formData.append("subCategory", subCategory);
-      formData.append("bestseller", bestseller);
-      formData.append("sizes", JSON.stringify(sizes));
-      formData.append("stock", stock);
-
-      // Watch specific details
-      formData.append("strapMaterial", strapMaterial);
-      formData.append("features", JSON.stringify(features));
-      formData.append("movement", movement);
-
-      // Images
-      image1 && formData.append("image1", image1);
-      image2 && formData.append("image2", image2);
-      image3 && formData.append("image3", image3);
-      image4 && formData.append("image4", image4);
+      const productData = {
+        name,
+        description,
+        price,
+        discount,
+        category,
+        subCategory,
+        bestseller,
+        colours,
+        stock,
+        strapMaterial,
+        features,
+        movement
+      };
 
       const response = await axios.put(
         `${backendUrl}/api/product/update/${productId}`,
-        formData,
+        productData,
         {
-          headers: { token },
+          headers: { token }
         }
       );
 
       if (response.data.success) {
         toast.success(response.data.message, { id: loadingToast });
-        navigate('/list');
+        navigate("/list")
       } else {
         toast.error(response.data.message, { id: loadingToast });
       }
@@ -125,45 +110,16 @@ const Edit = ({ token }) => {
     'Perpetual Calendar', 'Moon Phase', 'GMT', 'Skeleton Dial'
   ];
 
-  if (loading) return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin" />
-    </div>
-  );
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
-      <div>
-        <p className="mb-2">Upload Image</p>
-        <div className="flex gap-2">
-          {[
-            { state: image1, setState: setImage1, id: "image1" },
-            { state: image2, setState: setImage2, id: "image2" },
-            { state: image3, setState: setImage3, id: "image3" },
-            { state: image4, setState: setImage4, id: "image4" }
-          ].map(({ state, setState, id }) => (
-            <label
-              key={id}
-              htmlFor={id}
-              className={`relative ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              <img
-                className="w-20 h-20 object-cover border-2 border-gray-200"
-                src={!state ? assets.upload_area : URL.createObjectURL(state)}
-                alt=""
-              />
-              <input
-                onChange={(e) => setState(e.target.files[0])}
-                type="file"
-                id={id}
-                hidden
-                disabled={isSubmitting}
-              />
-            </label>
-          ))}
-        </div>
-      </div>
-
       <div className="w-full">
         <p className="mb-2">Product Name</p>
         <input
@@ -295,20 +251,20 @@ const Edit = ({ token }) => {
       </div>
 
       <div>
-        <p className="mb-2">Watch Sizes</p>
+        <p className="mb-2">Watch Color</p>
         <div className="flex flex-wrap gap-3">
-          {["38mm", "40mm", "42mm", "45mm"].map((size) => (
+          {["Blue", "Green", "White", "Black", "Gold"].map((colour) => (
             <div
-              key={size}
-              onClick={() => setSizes(prev =>
-                prev.includes(size)
-                  ? prev.filter(item => item !== size)
-                  : [...prev, size]
+              key={colour}
+              onClick={() => setColour(prev =>
+                prev.includes(colour)
+                  ? prev.filter(item => item !== colour)
+                  : [...prev, colour]
               )}
-              className={`${sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
+              className={`${colours.includes(colour) ? 'bg-pink-100' : 'bg-slate-200'
                 } px-3 py-1 cursor-pointer rounded`}
             >
-              {size}
+              {colour}
             </div>
           ))}
         </div>
@@ -359,7 +315,7 @@ const Edit = ({ token }) => {
             Updating...
           </>
         ) : (
-          'Update Product'
+          'Update'
         )}
       </button>
     </form>

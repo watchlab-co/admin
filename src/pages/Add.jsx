@@ -19,7 +19,7 @@ const Add = ({ token }) => {
   const [category, setCategory] = useState('Men');
   const [subCategory, setSubCategory] = useState('Branded');
   const [bestseller, setBestseller] = useState(false);
-  const [sizes, setSizes] = useState([]);
+  const [colours, setColour] = useState([]);
   const [stock, setStock] = useState('Yes');
   const [strapMaterial, setStrapMaterial] = useState('Leather');
   const [features, setFeatures] = useState([]);
@@ -39,7 +39,7 @@ const Add = ({ token }) => {
     setCategory('Men');
     setSubCategory('Branded');
     setBestseller(false);
-    setSizes([]);
+    setColour([]);
     setStrapMaterial('Leather');
     setMovement('Quartz');
   };
@@ -62,7 +62,7 @@ const Add = ({ token }) => {
       formData.append("category", category);
       formData.append("subCategory", subCategory);
       formData.append("bestseller", bestseller);
-      formData.append("sizes", JSON.stringify(sizes));
+      formData.append("colours", JSON.stringify(colours));
       formData.append("stock", stock);
 
       // Watch specific details
@@ -184,7 +184,10 @@ const Add = ({ token }) => {
             <option value="Branded">Branded</option>
             <option value="Rolex">Rolex</option>
             <option value="Casio">Casio</option>
+            <option value="Gucci">Gucci</option>
+            <option value="ArmaniExchange">Armani Exchange</option>
             <option value="Seiko">Seiko</option>
+            <option value="Citizen">Citizen</option>
             <option value="Fossil">Fossil</option>
             <option value="Rado">Rado</option>
             <option value="PatekPhilippe">Patek Philippe</option>
@@ -269,20 +272,20 @@ const Add = ({ token }) => {
       </div>
 
       <div>
-        <p className="mb-2">Watch Sizes</p>
+        <p className="mb-2">Watch Color</p>
         <div className="flex flex-wrap gap-3">
-          {["38mm", "40mm", "42mm", "45mm"].map((size) => (
+          {["Blue", "Green", "White", "Black", "Gold", "Brown", "Dark Blue", "Red", "Silver", "Rose Gold", "Grey", "Dark Green", "Dark Red" ,"Orange","Yellow","Violet"].map((colour) => (
             <div
-              key={size}
-              onClick={() => setSizes(prev =>
-                prev.includes(size)
-                  ? prev.filter(item => item !== size)
-                  : [...prev, size]
+              key={colour}
+              onClick={() => setColour(prev =>
+                prev.includes(colour)
+                  ? prev.filter(item => item !== colour)
+                  : [...prev, colour]
               )}
-              className={`${sizes.includes(size) ? 'bg-pink-100' : 'bg-slate-200'
+              className={`${colours.includes(colour) ? 'bg-pink-100' : 'bg-slate-200'
                 } px-3 py-1 cursor-pointer rounded`}
             >
-              {size}
+              {colour}
             </div>
           ))}
         </div>
