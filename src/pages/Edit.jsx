@@ -160,11 +160,11 @@ const Edit = ({ token }) => {
 
         <div>
           <p className="mb-2">Brand</p>
-          <select
+            <select
             onChange={(e) => setSubCategory(e.target.value)}
             value={subCategory}
             className="w-full px-3 py-2 border rounded"
-          >
+          ></select>
             <option value="Branded">Branded</option>
             <option value="Rolex">Rolex</option>
             <option value="Casio">Casio</option>
@@ -195,7 +195,7 @@ const Edit = ({ token }) => {
             <option value="Chanel">Chanel</option>
             <option value="Guess">Guess</option>
         </div>
-
+        
         <div>
           <p className="mb-2">Movement</p>
           <select
