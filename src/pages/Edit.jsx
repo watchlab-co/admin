@@ -3,10 +3,10 @@ import axios from 'axios';
 import { backendUrl } from '../App';
 import { toast } from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
-import { useParams ,useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Edit = ({ token }) => {
-  const { productId } = useParams(); 
+  const { productId } = useParams();
   const navigate = useNavigate()
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +30,7 @@ const Edit = ({ token }) => {
         const response = await axios.get(`${backendUrl}/api/product/${productId}`, {
           headers: { token }
         });
-        
+
         if (response.data.success) {
           const product = response.data.product;
           setName(product.name);
@@ -160,11 +160,11 @@ const Edit = ({ token }) => {
 
         <div>
           <p className="mb-2">Brand</p>
-            <select
+          <select
             onChange={(e) => setSubCategory(e.target.value)}
             value={subCategory}
             className="w-full px-3 py-2 border rounded"
-          ></select>
+          >
             <option value="Branded">Branded</option>
             <option value="Rolex">Rolex</option>
             <option value="Casio">Casio</option>
@@ -194,8 +194,9 @@ const Edit = ({ token }) => {
             <option value="Christian-dior">Christian Dior</option>
             <option value="Chanel">Chanel</option>
             <option value="Guess">Guess</option>
+          </select>
         </div>
-        
+
         <div>
           <p className="mb-2">Movement</p>
           <select
@@ -269,7 +270,7 @@ const Edit = ({ token }) => {
       <div>
         <p className="mb-2">Watch Color</p>
         <div className="flex flex-wrap gap-3">
-          {["Blue", "Green", "White", "Black", "Gold"].map((colour) => (
+          {["Blue", "Green", "White", "Black", "Gold", "Brown", "Dark Blue", "Red", "Silver", "Rose Gold", "Grey", "Dark Green", "Dark Red", "Orange", "Yellow", "Violet"].map((colour) => (
             <div
               key={colour}
               onClick={() => setColour(prev =>

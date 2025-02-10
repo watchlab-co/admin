@@ -181,13 +181,10 @@ const Add = ({ token }) => {
             value={subCategory}
             className="w-full px-3 py-2 border rounded"
           >
-            <option value="Branded">Branded</option>
+           <option value="Branded">Branded</option>
             <option value="Rolex">Rolex</option>
             <option value="Casio">Casio</option>
-            <option value="Gucci">Gucci</option>
-            <option value="ArmaniExchange">Armani Exchange</option>
             <option value="Seiko">Seiko</option>
-            <option value="Citizen">Citizen</option>
             <option value="Fossil">Fossil</option>
             <option value="Rado">Rado</option>
             <option value="PatekPhilippe">Patek Philippe</option>
@@ -196,6 +193,23 @@ const Add = ({ token }) => {
             <option value="AudemarsPiguet">Audemars Piguet</option>
             <option value="Omega">Omega</option>
             <option value="Hublot">Hublot</option>
+            <option value="Daniel-wellington">Danil Wellington</option>
+            <option value="Fastrack">Fastrack</option>
+            <option value="Versace">Versace</option>
+            <option value="Citizen">Citizen</option>
+            <option value="Omega">Omega</option>
+            <option value="Apple">Apple</option>
+            <option value="Richard-mille">Richars Mille</option>
+            <option value="Gucci">GUCCI</option>
+            <option value="Franck-muller">Franck Muller</option>
+            <option value="Vacheron-constantin">Vacheron Constantin</option>
+            <option value="Burberry">Burberry</option>
+            <option value="Bvlgari">Bvlgari</option>
+            <option value="Invicta">Invicta</option>
+            <option value="Calvin-klein-ck">Calvin Klvin (CK)</option>
+            <option value="Christian-dior">Christian Dior</option>
+            <option value="Chanel">Chanel</option>
+            <option value="Guess">Guess</option>
           </select>
         </div>
 
