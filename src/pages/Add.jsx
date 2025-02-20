@@ -289,7 +289,7 @@ const Add = ({ token }) => {
       <div>
         <p className="mb-2">Watch Color</p>
         <div className="flex flex-wrap gap-3">
-          {["Blue", "Green", "White", "Black", "Gold", "Brown","Pink" "Dark Blue", "Red", "Silver", "Rose Gold", "Grey", "Dark Green", "Dark Red" ,"Orange","Yellow","Violet"].map((colour) => (
+          {["Blue", "Green", "White", "Black", "Gold", "Brown","Pink", "Dark Blue", "Red", "Silver", "Rose Gold", "Grey", "Dark Green", "Dark Red" ,"Orange","Yellow","Violet"].map((colour) => (
             <div
               key={colour}
               onClick={() => setColour(prev =>
