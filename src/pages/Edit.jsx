@@ -19,6 +19,7 @@ const Edit = ({ token }) => {
   const [subCategory, setSubCategory] = useState('Branded');
   const [bestseller, setBestseller] = useState(false);
   const [colours, setColour] = useState([]);
+  const [image, SetImage] = useState([]);
   const [stock, setStock] = useState('Yes');
   const [strapMaterial, setStrapMaterial] = useState('Leather');
   const [features, setFeatures] = useState([]);
@@ -32,6 +33,8 @@ const Edit = ({ token }) => {
         });
 
         if (response.data.success) {
+          console.log(response.data.product);
+
           const product = response.data.product;
           setName(product.name);
           setDescription(product.description);
@@ -41,6 +44,7 @@ const Edit = ({ token }) => {
           setSubCategory(product.subCategory);
           setBestseller(product.bestseller);
           setColour(product.colours);
+          SetImage(product.image)
           setStock(product.stock);
           setStrapMaterial(product.strapMaterial);
           setFeatures(product.features);
@@ -120,6 +124,24 @@ const Edit = ({ token }) => {
 
   return (
     <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
+      <div>
+        <p className="mb-2">Image</p>
+        <div className="flex gap-2">
+          {image.length > 0 ? (
+            image.map((imgSrc, index) => (
+              <img
+                key={index}
+                className="w-20 h-20 object-cover border-2 border-gray-200 rounded"
+                src={imgSrc} // Use the image URL from the backend
+                alt={`Product Image ${index + 1}`}
+              />
+            ))
+          ) : (
+            <p className="text-gray-500">No images available</p>
+          )}
+        </div>
+      </div>
+
       <div className="w-full">
         <p className="mb-2">Product Name</p>
         <input
