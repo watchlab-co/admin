@@ -10,6 +10,7 @@ const Add = ({ token }) => {
   const [image2, setImage2] = useState(false);
   const [image3, setImage3] = useState(false);
   const [image4, setImage4] = useState(false);
+  const [video, setVideo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [name, setName] = useState('');
@@ -36,6 +37,7 @@ const Add = ({ token }) => {
     setImage2(false);
     setImage3(false);
     setImage4(false);
+    setVideo(false);
     setCategory('Men');
     setSubCategory('Branded');
     setBestseller(false);
@@ -48,6 +50,18 @@ const Add = ({ token }) => {
     e.preventDefault();
     if (isSubmitting) return;
 
+    // Basic validation
+    if (!name || !description || !price) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    if (parseFloat(discount) > parseFloat(price)) {
+      toast.error('Discount cannot be greater than price');
+      return;
+    }
+
+
     const loadingToast = toast.loading('Adding product...');
     setIsSubmitting(true);
 
@@ -58,7 +72,7 @@ const Add = ({ token }) => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
-      formData.append("discount", discount);
+      formData.append("discount", discount || 0); // Default to 0 if empty
       formData.append("category", category);
       formData.append("subCategory", subCategory);
       formData.append("bestseller", bestseller);
@@ -70,14 +84,18 @@ const Add = ({ token }) => {
       formData.append("features", JSON.stringify(features));
       formData.append("movement", movement);
 
-      // Images
+      // Images - only append if they exist
       image1 && formData.append("image1", image1);
       image2 && formData.append("image2", image2);
       image3 && formData.append("image3", image3);
       image4 && formData.append("image4", image4);
+      video && formData.append("video", video);
 
       const response = await axios.post(backendUrl + '/api/product/add', formData, {
-        headers: { token },
+        headers: {
+          token,
+          'Content-Type': 'multipart/form-data'
+        },
       });
 
       if (response.data.success) {
@@ -87,7 +105,7 @@ const Add = ({ token }) => {
         toast.error(response.data.message, { id: loadingToast });
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error adding product:', error);
       toast.error(
         error.response?.data?.message || 'Failed to add product. Please try again.',
         { id: loadingToast }
@@ -102,43 +120,94 @@ const Add = ({ token }) => {
     'Perpetual Calendar', 'Moon Phase', 'GMT', 'Skeleton Dial'
   ];
 
+  const colorOptions = [
+    "Blue", "Green", "White", "Black", "Gold", "Brown", "Pink",
+    "Dark Blue", "Red", "Silver", "Rose Gold", "Grey",
+    "Dark Green", "Dark Red", "Orange", "Yellow", "Violet"
+  ];
+  const uploads = [
+    { state: image1, setState: setImage1, id: "image1" },
+    { state: image2, setState: setImage2, id: "image2" },
+    { state: image3, setState: setImage3, id: "image3" },
+    { state: image4, setState: setImage4, id: "image4" },
+    { state: video, setState: setVideo, id: "video" },
+  ];
 
   return (
     <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
       <div>
-        <p className="mb-2">Upload Image</p>
-        <div className="flex gap-2">
-          {[
-            { state: image1, setState: setImage1, id: "image1" },
-            { state: image2, setState: setImage2, id: "image2" },
-            { state: image3, setState: setImage3, id: "image3" },
-            { state: image4, setState: setImage4, id: "image4" }
-          ].map(({ state, setState, id }) => (
+      <p className="mb-2 font-medium">Upload Image & Video</p>
+      <div className="flex gap-3 flex-wrap">
+        {uploads.map(({ state, setState, id }) => {
+          const isVideo = id === "video";
+          const previewUrl = state ? URL.createObjectURL(state) : assets.upload_area;
+
+          return (
             <label
               key={id}
               htmlFor={id}
-              className={`relative ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+              className={`relative w-20 h-20 border-2 border-gray-300 rounded overflow-hidden shadow-sm flex items-center justify-center ${
+                isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
-              <img
-                className="w-20 h-20 object-cover border-2 border-gray-200"
-                src={!state ? assets.upload_area : URL.createObjectURL(state)}
-                alt=""
-              />
+              {state ? (
+                isVideo ? (
+                  <video
+                    src={previewUrl}
+                    className="w-full h-full object-cover"
+                    controls
+                  />
+                ) : (
+                  <img
+                    src={previewUrl}
+                    alt={`Preview ${id}`}
+                    className="w-full h-full object-cover"
+                  />
+                )
+              ) : (
+                <img
+                  src={assets.upload_area}
+                  alt="Upload placeholder"
+                  className="w-10 h-10 opacity-50"
+                />
+              )}
+
               <input
-                onChange={(e) => setState(e.target.files[0])}
                 type="file"
                 id={id}
                 hidden
                 disabled={isSubmitting}
+                accept={isVideo ? "video/*" : "image/*"}
+                onChange={(e) => {
+                  if (e.target.files[0]) {
+                    setState(e.target.files[0]);
+                  }
+                }}
               />
+
+              {/* Clear Button */}
+              {state && !isSubmitting && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setState(null);
+                  }}
+                  className="absolute top-0 right-0 text-white bg-black bg-opacity-60 rounded-bl px-1 text-xs hover:bg-opacity-80"
+                >
+                  ✕
+                </button>
+              )}
             </label>
-          ))}
-        </div>
+          );
+        })}
       </div>
+    </div>
 
       <div className="w-full">
-        <p className="mb-2">Product Name</p>
+        <label htmlFor="product-name" className="mb-2 block">Product Name *</label>
         <input
+          id="product-name"
           onChange={(e) => setName(e.target.value)}
           value={name}
           className="w-full max-w-[500px] px-3 py-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
@@ -150,20 +219,23 @@ const Add = ({ token }) => {
       </div>
 
       <div className="w-full">
-        <p className="mb-2">Product Description</p>
+        <label htmlFor="product-description" className="mb-2 block">Product Description *</label>
         <textarea
+          id="product-description"
           onChange={(e) => setDescription(e.target.value)}
           value={description}
           className="w-full max-w-[500px] px-3 py-2 border rounded"
           placeholder="Enter the product description"
           required
+          rows={4}
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-[500px]">
         <div>
-          <p className="mb-2">Category</p>
+          <label htmlFor="category" className="mb-2 block">Category *</label>
           <select
+            id="category"
             onChange={(e) => setCategory(e.target.value)}
             value={category}
             className="w-full px-3 py-2 border rounded"
@@ -176,13 +248,14 @@ const Add = ({ token }) => {
         </div>
 
         <div>
-          <p className="mb-2">Brand</p>
+          <label htmlFor="brand" className="mb-2 block">Brand *</label>
           <select
+            id="brand"
             onChange={(e) => setSubCategory(e.target.value)}
             value={subCategory}
             className="w-full px-3 py-2 border rounded"
           >
-           <option value="Branded">Branded</option>
+            <option value="Branded">Branded</option>
             <option value="Rolex">Rolex</option>
             <option value="Casio">Casio</option>
             <option value="Seiko">Seiko</option>
@@ -198,7 +271,6 @@ const Add = ({ token }) => {
             <option value="Fastrack">Fastrack</option>
             <option value="Versace">Versace</option>
             <option value="Citizen">Citizen</option>
-            <option value="Omega">Omega</option>
             <option value="Apple">Apple</option>
             <option value="Richard-mille">Richars Mille</option>
             <option value="Gucci">GUCCI</option>
@@ -215,8 +287,9 @@ const Add = ({ token }) => {
         </div>
 
         <div>
-          <p className="mb-2">Movement</p>
+          <label htmlFor="movement" className="mb-2 block">Movement *</label>
           <select
+            id="movement"
             onChange={(e) => setMovement(e.target.value)}
             value={movement}
             className="w-full px-3 py-2 border rounded"
@@ -231,48 +304,53 @@ const Add = ({ token }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-[500px]">
         <div>
-          <p className="mb-2">Price ($)</p>
+          <label htmlFor="price" className="mb-2 block">Price ($) *</label>
           <input
-            onChange={(e) => setPrice(e.target.value)}
+            id="price"
+            onChange={(e) => setPrice(Math.max(0, e.target.value))}
             value={price}
             className="w-full px-3 py-2 border rounded"
             type="number"
             placeholder="250"
+            min="0"
+            step="0.01"
             required
           />
         </div>
 
         <div>
-          <p className="mb-2">Discount (Fake Price )</p>
+          <label htmlFor="discount" className="mb-2 block">Discount ($)</label>
           <input
-            onChange={(e) => setDiscount(e.target.value)}
+            id="discount"
+            onChange={(e) => setDiscount(Math.max(0, e.target.value))}
             value={discount}
             className="w-full px-3 py-2 border rounded"
             type="number"
             placeholder="10"
             min="0"
+            step="0.01"
           />
         </div>
 
         <div>
-          <p className="mb-2">Stock</p>
+          <label htmlFor="stock" className="mb-2 block">Stock *</label>
           <select
-            onChange={(e) => setMovement(e.target.value)}
+            id="stock"
+            onChange={(e) => setStock(e.target.value)}
             value={stock}
             className="w-full px-3 py-2 border rounded"
           >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
+            <option value="Yes">In Stock</option>
+            <option value="No">Out of Stock</option>
           </select>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[500px]">
-
-
         <div>
-          <p className="mb-2">Strap Material</p>
+          <label htmlFor="strap-material" className="mb-2 block">Strap Material *</label>
           <select
+            id="strap-material"
             onChange={(e) => setStrapMaterial(e.target.value)}
             value={strapMaterial}
             className="w-full px-3 py-2 border rounded"
@@ -286,11 +364,12 @@ const Add = ({ token }) => {
         </div>
       </div>
 
-      <div>
+      <div className="w-full">
         <p className="mb-2">Watch Color</p>
         <div className="flex flex-wrap gap-3">
-          {["Blue", "Green", "White", "Black", "Gold", "Brown","Pink", "Dark Blue", "Red", "Silver", "Rose Gold", "Grey", "Dark Green", "Dark Red" ,"Orange","Yellow","Violet"].map((colour) => (
-            <div
+          {colorOptions.map((colour) => (
+            <button
+              type="button"
               key={colour}
               onClick={() => setColour(prev =>
                 prev.includes(colour)
@@ -301,16 +380,17 @@ const Add = ({ token }) => {
                 } px-3 py-1 cursor-pointer rounded`}
             >
               {colour}
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
-      <div>
+      <div className="w-full">
         <p className="mb-2">Features</p>
         <div className="flex flex-wrap gap-3">
           {watchFeatures.map((feature) => (
-            <div
+            <button
+              type="button"
               key={feature}
               onClick={() => setFeatures(prev =>
                 prev.includes(feature)
@@ -321,12 +401,12 @@ const Add = ({ token }) => {
                 } px-3 py-1 cursor-pointer rounded`}
             >
               {feature}
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="flex gap-2 mt-2">
+      <div className="flex gap-2 mt-2 items-center">
         <input
           onChange={() => setBestseller(prev => !prev)}
           checked={bestseller}
