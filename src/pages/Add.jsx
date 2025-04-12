@@ -25,6 +25,8 @@ const Add = ({ token }) => {
   const [strapMaterial, setStrapMaterial] = useState('Leather');
   const [features, setFeatures] = useState([]);
   const [movement, setMovement] = useState('Quartz');
+  const [productDate, setProductDate] = useState('');
+
 
   const resetForm = () => {
     setName('');
@@ -44,6 +46,7 @@ const Add = ({ token }) => {
     setColour([]);
     setStrapMaterial('Leather');
     setMovement('Quartz');
+    setProductDate('');
   };
 
   const onSubmitHandler = async (e) => {
@@ -56,7 +59,7 @@ const Add = ({ token }) => {
       return;
     }
 
-    if (parseFloat(discount) > parseFloat(price)) {
+    if (parseFloat(discount) < parseFloat(price)) {
       toast.error('Discount cannot be greater than price');
       return;
     }
@@ -78,6 +81,7 @@ const Add = ({ token }) => {
       formData.append("bestseller", bestseller);
       formData.append("colours", JSON.stringify(colours));
       formData.append("stock", stock);
+      formData.append("productDate", productDate || new Date().toISOString().split('T')[0]); // Default to today if empty
 
       // Watch specific details
       formData.append("strapMaterial", strapMaterial);
@@ -136,73 +140,72 @@ const Add = ({ token }) => {
   return (
     <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
       <div>
-      <p className="mb-2 font-medium">Upload Image & Video</p>
-      <div className="flex gap-3 flex-wrap">
-        {uploads.map(({ state, setState, id }) => {
-          const isVideo = id === "video";
-          const previewUrl = state ? URL.createObjectURL(state) : assets.upload_area;
+        <p className="mb-2 font-medium">Upload Image & Video</p>
+        <div className="flex gap-3 flex-wrap">
+          {uploads.map(({ state, setState, id }) => {
+            const isVideo = id === "video";
+            const previewUrl = state ? URL.createObjectURL(state) : assets.upload_area;
 
-          return (
-            <label
-              key={id}
-              htmlFor={id}
-              className={`relative w-20 h-20 border-2 border-gray-300 rounded overflow-hidden shadow-sm flex items-center justify-center ${
-                isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
-            >
-              {state ? (
-                isVideo ? (
-                  <video
-                    src={previewUrl}
-                    className="w-full h-full object-cover"
-                    controls
-                  />
+            return (
+              <label
+                key={id}
+                htmlFor={id}
+                className={`relative w-20 h-20 border-2 border-gray-300 rounded overflow-hidden shadow-sm flex items-center justify-center ${isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
+              >
+                {state ? (
+                  isVideo ? (
+                    <video
+                      src={previewUrl}
+                      className="w-full h-full object-cover"
+                      controls
+                    />
+                  ) : (
+                    <img
+                      src={previewUrl}
+                      alt={`Preview ${id}`}
+                      className="w-full h-full object-cover"
+                    />
+                  )
                 ) : (
                   <img
-                    src={previewUrl}
-                    alt={`Preview ${id}`}
-                    className="w-full h-full object-cover"
+                    src={assets.upload_area}
+                    alt="Upload placeholder"
+                    className="w-10 h-10 opacity-50"
                   />
-                )
-              ) : (
-                <img
-                  src={assets.upload_area}
-                  alt="Upload placeholder"
-                  className="w-10 h-10 opacity-50"
-                />
-              )}
+                )}
 
-              <input
-                type="file"
-                id={id}
-                hidden
-                disabled={isSubmitting}
-                accept={isVideo ? "video/*" : "image/*"}
-                onChange={(e) => {
-                  if (e.target.files[0]) {
-                    setState(e.target.files[0]);
-                  }
-                }}
-              />
-
-              {/* Clear Button */}
-              {state && !isSubmitting && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setState(null);
+                <input
+                  type="file"
+                  id={id}
+                  hidden
+                  disabled={isSubmitting}
+                  accept={isVideo ? "video/*" : "image/*"}
+                  onChange={(e) => {
+                    if (e.target.files[0]) {
+                      setState(e.target.files[0]);
+                    }
                   }}
-                  className="absolute top-0 right-0 text-white bg-black bg-opacity-60 rounded-bl px-1 text-xs hover:bg-opacity-80"
-                >
-                  ✕
-                </button>
-              )}
-            </label>
-          );
-        })}
+                />
+
+                {/* Clear Button */}
+                {state && !isSubmitting && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setState(null);
+                    }}
+                    className="absolute top-0 right-0 text-white bg-black bg-opacity-60 rounded-bl px-1 text-xs hover:bg-opacity-80"
+                  >
+                    ✕
+                  </button>
+                )}
+              </label>
+            );
+          })}
+        </div>
       </div>
-    </div>
 
       <div className="w-full">
         <label htmlFor="product-name" className="mb-2 block">Product Name *</label>
@@ -362,6 +365,18 @@ const Add = ({ token }) => {
             <option value="Ceramic">Ceramic</option>
           </select>
         </div>
+        <div>
+          <label htmlFor="product-date" className="mb-2 block">Date of product (WP)*</label>
+          <input
+            type="date"
+            id="product-date"
+            onChange={(e) => setProductDate(e.target.value)}
+            value={productDate}
+            className="w-full px-3 py-2 border rounded"
+            required
+          />
+        </div>
+
       </div>
 
       <div className="w-full">
