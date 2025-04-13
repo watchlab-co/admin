@@ -95,6 +95,10 @@ const Add = ({ token }) => {
       image4 && formData.append("image4", image4);
       video && formData.append("video", video);
 
+      console.log('====================================');
+      console.log(formData);
+      console.log('====================================');
+
       const response = await axios.post(backendUrl + '/api/product/add', formData, {
         headers: {
           token,
