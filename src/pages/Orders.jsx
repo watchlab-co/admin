@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom'
 
 const Orders = ({ token }) => {
   const [orders, setOrders] = useState([])
+  const [filteredOrders, setFilteredOrders] = useState([])
   const [loading, setLoading] = useState(true)
+  const [paymentFilter, setPaymentFilter] = useState('all') // 'all', 'complete', 'pending'
   const navigate = useNavigate()
 
   const fetchAllorders = async () => {
@@ -18,7 +20,9 @@ const Orders = ({ token }) => {
     try {
       const response = await axios.post(backendUrl + '/api/order/list', {}, { headers: { token } })
       if (response.data.success) {
-        setOrders(response.data.orders.reverse())
+        const allOrders = response.data.orders.reverse()
+        setOrders(allOrders)
+        applyFilters(allOrders, paymentFilter)
       } else {
         toast.error(response.data.message)
       }
@@ -27,6 +31,23 @@ const Orders = ({ token }) => {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Apply filters based on payment status
+  const applyFilters = (ordersList, filter) => {
+    if (filter === 'all') {
+      setFilteredOrders(ordersList)
+    } else if (filter === 'complete') {
+      setFilteredOrders(ordersList.filter(order => order.payment === true))
+    } else if (filter === 'pending') {
+      setFilteredOrders(ordersList.filter(order => order.payment === false))
+    }
+  }
+
+  // Handle filter change
+  const handleFilterChange = (filter) => {
+    setPaymentFilter(filter)
+    applyFilters(orders, filter)
   }
 
   const statusHandler = async (event, orderId) => {
@@ -85,21 +106,59 @@ const Orders = ({ token }) => {
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-bold text-gray-800">Order Management</h3>
-        <button 
-          onClick={fetchAllorders} 
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-        >
-          Refresh Orders
-        </button>
+        <div className="flex items-center space-x-4">
+          {/* Payment filter buttons */}
+          <div className="flex rounded-md shadow-sm" role="group">
+            <button
+              type="button"
+              onClick={() => handleFilterChange('all')}
+              className={`px-4 py-2 text-sm font-medium border ${
+                paymentFilter === 'all'
+                  ? 'bg-blue-500 text-white border-blue-500'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              } rounded-l-lg`}
+            >
+              All Orders
+            </button>
+            <button
+              type="button"
+              onClick={() => handleFilterChange('complete')}
+              className={`px-4 py-2 text-sm font-medium border-t border-b border-r ${
+                paymentFilter === 'complete'
+                  ? 'bg-green-500 text-white border-green-500'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              Payment Complete
+            </button>
+            <button
+              type="button"
+              onClick={() => handleFilterChange('pending')}
+              className={`px-4 py-2 text-sm font-medium border-t border-b border-r ${
+                paymentFilter === 'pending'
+                  ? 'bg-red-500 text-white border-red-500'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              } rounded-r-lg`}
+            >
+              Payment Pending
+            </button>
+          </div>
+          <button 
+            onClick={fetchAllorders} 
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+          >
+            Refresh Orders
+          </button>
+        </div>
       </div>
 
-      {orders.length === 0 ? (
+      {filteredOrders.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500">No orders found</p>
         </div>
       ) : (
         <div className="space-y-6">
-          {orders.map((order, index) => (
+          {filteredOrders.map((order, index) => (
             <div 
               key={index} 
               className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
