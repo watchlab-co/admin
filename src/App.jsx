@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react'
 import Edit from './pages/Edit'
 import { Toaster } from 'react-hot-toast'
+import AddOrderForm from './pages/AddOrder'
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 export const currency = '₹'
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path='/add' element={<Add token={token} />} />
                 <Route path='/list' element={<List token={token} />} />
                 <Route path='/orders' element={<Orders token={token} />} />
+                <Route path='/new-order' element={<AddOrderForm token={token} />} />
                 <Route path='/edit/:productId' element={<Edit token={token} />} />
               </Routes>
             </div>
