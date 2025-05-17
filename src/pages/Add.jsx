@@ -26,6 +26,7 @@ const Add = ({ token }) => {
   const [features, setFeatures] = useState([]);
   const [movement, setMovement] = useState('Quartz');
   const [productDate, setProductDate] = useState('');
+  const [freeDelivery, setFreeDelivery] = useState(false);
 
 
   const resetForm = () => {
@@ -47,6 +48,7 @@ const Add = ({ token }) => {
     setStrapMaterial('Leather');
     setMovement('Quartz');
     setProductDate('');
+    setFreeDelivery(false);
   };
 
   const onSubmitHandler = async (e) => {
@@ -81,6 +83,7 @@ const Add = ({ token }) => {
       formData.append("bestseller", bestseller);
       formData.append("colours", JSON.stringify(colours));
       formData.append("stock", stock);
+      formData.append("freeDelivery", freeDelivery);
       formData.append("productDate", productDate || new Date().toISOString().split('T')[0]); // Default to today if empty
 
       // Watch specific details
@@ -370,16 +373,17 @@ const Add = ({ token }) => {
           </select>
         </div>
         <div>
-          <label htmlFor="product-date" className="mb-2 block">Date of product (WP)*</label>
+          <label htmlFor="free-delivery" className="mb-2 block">Free Delivery</label>
           <input
-            type="date"
-            id="product-date"
-            onChange={(e) => setProductDate(e.target.value)}
-            value={productDate}
-            className="w-full px-3 py-2 border rounded"
-            required
+            type="checkbox"
+            id="free-delivery"
+            onChange={(e) => setFreeDelivery(e.target.checked)}
+            checked={freeDelivery}
+            className="mr-2"
           />
+          <span>Enable free delivery for this product</span>
         </div>
+
 
       </div>
 
