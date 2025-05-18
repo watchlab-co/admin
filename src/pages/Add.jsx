@@ -373,6 +373,17 @@ const Add = ({ token }) => {
           </select>
         </div>
         <div>
+          <label htmlFor="product-date" className="mb-2 block">Date of product (WP)*</label>
+          <input
+            type="date"
+            id="product-date"
+            onChange={(e) => setProductDate(e.target.value)}
+            value={productDate}
+            className="w-full px-3 py-2 border rounded"
+            required
+          />
+        </div>
+        <div>
           <label htmlFor="free-delivery" className="mb-2 block">Free Delivery</label>
           <input
             type="checkbox"
@@ -381,7 +392,7 @@ const Add = ({ token }) => {
             checked={freeDelivery}
             className="mr-2"
           />
-          <span>Enable free delivery for this product</span>
+          <span>Enable free delivery</span>
         </div>
 
 
