@@ -352,7 +352,7 @@ const List = ({ token }) => {
                         className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                         onClick={() => requestSort('WPdate')}
                       >
-                        Created Date {getSortIndicator('WPdate')}
+                        Whatsapp Date {getSortIndicator('WPdate')}
                       </th>
                       <th scope="col" className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
